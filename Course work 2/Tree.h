@@ -1,5 +1,5 @@
 #pragma once
-#include <iomanip>
+#include <iostream>
 
 struct Node
 {
@@ -25,19 +25,37 @@ private:
 	int   size;
 	Node* root;
 
-	void showTrunks(Trunk* p);
-
-	void printTree(Node* root, Trunk* prev, bool isLeft);
+	void showTrunks(Trunk*, std::ostream&);
+	void printTree(Node*, Trunk*, bool, std::ostream&);
+	void erase(Node*);
+	void preOrderTravers(Node*);
+	void inOrderTravers(Node*);
+	void postOrderTravers(Node*);
+	void breadthFirstTravers(Node*);
 public:
 	Tree() : size(0), root(NULL) {};
 
-	void insert(int num);
+	~Tree();
+
+	void insert(int);
 
 	int getSize();
 
-	void print();
+	void print(bool = true);
 
 	int min();
 
 	int max();
+
+	bool find(int);
+
+	void del(int);
+
+	void straight();
+
+	void symmetrical();
+
+	void reverse();
+
+	void breadth();
 };
