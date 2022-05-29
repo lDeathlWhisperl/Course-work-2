@@ -67,6 +67,8 @@ void Tree::print(bool isConsoleOutput)
 
 	printTree(root, nullptr, false, fout);
 
+	fout << "\nTree size: " << getSize() << " [" << min() << "; " << max() << "]\n";
+
 	fout.close();
 }
 
@@ -216,11 +218,12 @@ void Tree::printTree(Node* root, Trunk* prev, bool isLeft, std::ostream& out)
 }
 void Tree::erase(Node* node)
 {
-	if (node)
+	if (node && getSize())
 	{
 		erase(node->left);
 		erase(node->right);
 		delete node;
+		size--;
 	}
 }
 void Tree::preOrderTravers(Node* root) {

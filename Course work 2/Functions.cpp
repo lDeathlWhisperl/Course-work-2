@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <conio.h>
 #include <iostream>
+#include <fstream>
 
 enum colors
 {
@@ -57,21 +58,23 @@ int getRandomNumber(int min, int max)
 void drawMainMenu(int id , bool &isAvailable)
 {
     system("cls");
-    char menu[12][25] = {
-        "[        Exit         ]",  // 0
-        "[    Set tree size    ]",  // 1
-        "[     Input items     ]",  // 2
-        "[    Get from file    ]x", // 3
-        "[    Show the tree    ]",  // 4
-        "[ Print into the file ]",  // 5
-        "[       Delete        ]",  // 6
-        "[     Get an item     ]",  // 7
-        "[  Straight traversal ]",  // 8
-        "[  Reverse traversal  ]",  // 9
-        "[ Symmetric traversal ]",  // 10
-        "[  Breadth traversal  ]"}; // 11
+    std::cout << "\n\n";
+    char menu[13][24] = {
+        "[        Exit         ]",
+        "[    Set tree size    ]",
+        "[     Input items     ]",
+        "[    Get from file    ]",
+        "[    Show the tree    ]",
+        "[ Print into the file ]",
+        "[       Delete        ]",
+        "[     Get an item     ]",
+        "[  Straight traversal ]",
+        "[  Reverse traversal  ]",
+        "[ Symmetric traversal ]",
+        "[  Breadth traversal  ]",
+        "[        Erase        ]"};
 
-    for (int i = 0; i < 12; i++)
+    for (int i = 0; i < 13; i++)
     {
         if (i == id)
             std::cout << "   ";
@@ -81,7 +84,7 @@ void drawMainMenu(int id , bool &isAvailable)
         if (!isAvailable && id > 3 && i == id)
         {
             setColor(BLACK, RED);
-            std::cout << "[ UNAVAILABLE IF TREE HAS NO SIZE ]";
+            std::cout << "[ UNAVAILABLE IF THE TREE HAS NO ITEMS ]";
             setColor(WHITE, BLACK);
         }
 
@@ -110,7 +113,16 @@ void setTreeSize(Tree &tr, bool & isAvailable)
     for (int i = 0; i < size; i++)
         tr.insert(getRandomNumber(-99, 99));
 
-    isAvailable = true;
+    system("cls");
+
+    if (tr.getSize())
+    {
+        isAvailable = true;
+        std::cout << "\x1b[32m\n\n [COMPLETED]\x1b[0m" << '\n';
+    }
+    else
+        std::cout << "\x1b[31m\n\n [THE TREE IS EMPTY]\x1b[0m" << '\n';
+    timer(3);
 }
 
 void input(Tree& tr, bool &isAvailable)
@@ -125,19 +137,47 @@ void input(Tree& tr, bool &isAvailable)
     std::cin.clear();
     std::cin.ignore(32767, '\n');
 
-    isAvailable = true;
+    system("cls");
+
+    if (tr.getSize())
+    {
+        isAvailable = true;
+        std::cout << "\x1b[32m\n\n [COMPLETED]\x1b[0m" << '\n';
+    }
+    else
+        std::cout << "\x1b[31m\n\n [THE TREE IS EMPTY]\x1b[0m" << '\n';
+    timer(3);
 }
-//uncompleted
+
 void fromFile(Tree &tr, bool &isAvailable)
 {
+    system("cls");
+    std::ifstream fin("Nums.txt");
+    int num;
 
-    isAvailable = true;
+    while (fin >> num)
+        tr.insert(num);
+
+    fin.clear();
+    fin.ignore(32767, '\n');
+
+    fin.close();
+    if (tr.getSize())
+    {
+        isAvailable = true;
+        std::cout << "\x1b[32m\n\n [COMPLETED]\x1b[0m" << '\n';
+    }
+    else
+        std::cout << "\x1b[31m\n\n [THE FILE HAS NO NUMS]\x1b[0m" << '\n';
+    timer(3);
+    
 }
 
 void print(Tree &tr)
 {
     system("cls");
     tr.print();
+    std::cout << "Size: " << tr.getSize() << '\n';
     system("pause");
 }
 
@@ -256,6 +296,15 @@ void breadth(Tree& tr)
     system("pause");
 }
 
+void erase(Tree& tr, bool& isAvailable)
+{
+    system("cls");
+    tr.~Tree();
+    std::cout << "\x1b[32m\n\n [COMPLETED]\x1b[0m" << '\n';
+    timer(3);
+    isAvailable = false;
+}
+
 void choose(Tree &tr, int id, bool &isAvailable, bool &isEnable)
 {
     switch (id)
@@ -301,6 +350,8 @@ void choose(Tree &tr, int id, bool &isAvailable, bool &isEnable)
         case 11:
             breadth(tr);
             break;
+        case 12:
+            erase(tr, isAvailable);
         }
 }
 
@@ -320,12 +371,12 @@ void mainMenu()
         case w:
         case ARROW_UP:
             if (id != 0) id--;
-            else id = 11;
+            else id = 12;
             break;
         case S:
         case s:
         case ARROW_DOWN:
-            if (id != 11) id++;
+            if (id != 12) id++;
             else id = 0;
             break;
         case ENTER:
